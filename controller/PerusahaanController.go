@@ -16,8 +16,8 @@ func GetPerusahaansController(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success get all perusahaans",
-		"perusahaans":  perusahaans,
+		"message":     "success get all perusahaans",
+		"perusahaans": perusahaans,
 	})
 }
 
@@ -33,8 +33,8 @@ func GetPerusahaanController(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success get perusahaans by id",
-		"perusahaans":  perusahaans,
+		"message":     "success get perusahaans by id",
+		"perusahaans": perusahaans,
 	})
 }
 
@@ -46,8 +46,8 @@ func CreatePerusahaanController(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success create new perusahaans",
-		"perusahaans":  perusahaans,
+		"message":     "success create new perusahaans",
+		"perusahaans": perusahaans,
 	})
 }
 
@@ -70,7 +70,15 @@ func UpdatePerusahaanController(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success update perusahaan by id",
-		"perusahaan":   perusahaans,
+		"message":    "success update perusahaan by id",
+		"perusahaan": perusahaans,
 	})
+}
+
+func PostJobController(c echo.Context) error {
+	return config.DB.Error
+}
+
+func ValidateLamaranController(c echo.Context) error {
+	return config.DB.Error
 }
