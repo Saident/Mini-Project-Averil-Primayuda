@@ -13,6 +13,6 @@ type Jobs struct {
 	Status    string `json:"status" form:"status"`
 	Gaji      string `json:"gaji" form:"gaji"`
 
-	Perusahaan_ID int
-	Perusahaan    Perusahaan `gorm:"foreignKey:Perusahaan_ID"`
+	PerusahaanID int
+	Perusahaan   Perusahaan `gorm:"references:id"`
 }
