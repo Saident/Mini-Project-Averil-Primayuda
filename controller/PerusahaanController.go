@@ -16,8 +16,8 @@ func GetPerusahaansController(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success get all perusahaans",
-		"perusahaans":  perusahaans,
+		"message":     "success get all perusahaans",
+		"perusahaans": perusahaans,
 	})
 }
 
@@ -33,8 +33,8 @@ func GetPerusahaanController(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success get perusahaans by id",
-		"perusahaans":  perusahaans,
+		"message":     "success get perusahaans by id",
+		"perusahaans": perusahaans,
 	})
 }
 
@@ -46,8 +46,8 @@ func CreatePerusahaanController(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success create new perusahaans",
-		"perusahaans":  perusahaans,
+		"message":     "success create new perusahaans",
+		"perusahaans": perusahaans,
 	})
 }
 
@@ -70,7 +70,78 @@ func UpdatePerusahaanController(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success update perusahaan by id",
-		"perusahaans":   perusahaans,
+		"message":     "success update perusahaan by id",
+		"perusahaans": perusahaans,
+	})
+}
+
+func GetAllLamaranByPerusahaanController(c echo.Context) error {
+	return config.DB.Error
+}
+
+func GetLamaranByIdController(c echo.Context) error {
+	return config.DB.Error
+}
+
+func ValidateLamaranController(c echo.Context) error {
+	return config.DB.Error
+}
+
+func PostJobsController(c echo.Context) error {
+	jobs := model.Jobs{}
+	c.Bind(&jobs)
+
+	if err := config.DB.Save(&jobs).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success create new jobs",
+		"jobs":    jobs,
+	})
+}
+
+func GetJobByPerusahaanController(c echo.Context) error {
+	perusahaan_id, err := strconv.Atoi(c.Param("perusahaan_id"))
+	if err != nil {
+		echo.NewHTTPError(http.StatusBadRequest, "messages: invalid id parameter")
+	}
+
+	var jobs []model.Jobs
+	if err := config.DB.Find(&jobs, perusahaan_id).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success get jobs by perusahaan id",
+		"jobs":    jobs,
+	})
+}
+
+func UpdateJobByIdController(c echo.Context) error {
+	job_Id, err := strconv.Atoi(c.Param("JobId"))
+	if err != nil {
+		echo.NewHTTPError(http.StatusBadRequest, "messages: invalid id parameter")
+	}
+
+	perusahaan_Id, err := strconv.Atoi(c.Param("PerusahaanId"))
+	if err != nil {
+		echo.NewHTTPError(http.StatusBadRequest, "messages: invalid id parameter")
+	}
+
+	var jobs model.Jobs
+
+	if err := config.DB.First(&jobs, job_Id, perusahaan_Id).Error; err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, err.Error())
+	}
+
+	c.Bind(&jobs)
+
+	if err := config.DB.Save(&jobs).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success update job by id",
+		"job":     jobs,
 	})
 }
