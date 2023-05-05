@@ -71,6 +71,6 @@ func UpdatePerusahaanController(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success update perusahaan by id",
-		"perusahaan":   perusahaans,
+		"perusahaans":   perusahaans,
 	})
 }
