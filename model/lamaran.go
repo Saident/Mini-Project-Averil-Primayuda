@@ -6,7 +6,7 @@ import (
 
 type Lamaran struct {
 	gorm.Model
-	ID             int
+	ID             int    `gorm:"primaryKey"`
 	Lamaran_status string `json:"lamaran_status" form:"lamaran_status"`
 
 	User_ID int
