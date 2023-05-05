@@ -6,7 +6,7 @@ import (
 
 type User struct {
 	gorm.Model
-	ID          int
+	ID          int    `gorm:"primaryKey"`
 	Nama        string `json:"name" form:"name"`
 	Tgl_lahir   string `json:"tgl_lahir" form:"tgl_lahir"`
 	Alamat      string `json:"alamat" form:"alamat"`

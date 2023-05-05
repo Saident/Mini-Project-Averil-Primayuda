@@ -6,7 +6,7 @@ import (
 
 type Jobs struct {
 	gorm.Model
-	ID        int
+	ID        int    `gorm:"primaryKey"`
 	Deskripsi string `json:"nama" form:"nama"`
 	Alamat    string `json:"alamat" form:"alamat"`
 	Expire    string `json:"expire" form:"expire"`
