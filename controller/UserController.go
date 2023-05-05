@@ -75,11 +75,11 @@ func UpdateUserController(c echo.Context) error {
 	})
 }
 
-func ApplyJobsController(c echo.Context) error {
+func LamaranController(c echo.Context) error {
 	return config.DB.Error
 }
 
-func GetApplyJobsStatusController(c echo.Context) error {
+func GetLamaranStatusController(c echo.Context) error {
 	return config.DB.Error
 }
 
