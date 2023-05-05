@@ -6,15 +6,15 @@ import (
 
 type Lamaran struct {
 	gorm.Model
-	ID             int
+	ID             int    `gorm:"primaryKey"`
 	Lamaran_status string `json:"lamaran_status" form:"lamaran_status"`
 
-	User_ID int
-	User    User `gorm:"references:id"`
+	UserID int
+	User   User `gorm:"references:id"`
 
-	Job_ID int
-	Jobs   Jobs `gorm:"references:id"`
+	JobID int
+	Jobs  Jobs `gorm:"references:id"`
 
-	Perusahaan_ID int
-	Perusahaan    Perusahaan `gorm:"references:id"`
+	PerusahaanID int
+	Perusahaan   Perusahaan `gorm:"references:id"`
 }

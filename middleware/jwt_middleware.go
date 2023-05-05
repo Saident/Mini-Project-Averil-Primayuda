@@ -1,17 +1,19 @@
 package middleware
 
 import (
-	"github.com/Saident/Mini-Project-Averil-Primayuda/constants"
 	"time"
+
+	"github.com/Saident/Mini-Project-Averil-Primayuda/constants"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
-func CreateToken(name string, email string, role string) (string, error) {
+func CreateToken(name string, email string, role string, roleID int) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["name"] = name
 	claims["email"] = email
 	claims["role"] = role
+	claims["roleID"] = roleID
 	claims["exp"] = time.Now().Add(time.Hour * 2).Unix()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
