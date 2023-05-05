@@ -75,7 +75,7 @@ func UpdateUserController(c echo.Context) error {
 	})
 }
 
-func LamaranController(c echo.Context) error {
+func PostLamaranController(c echo.Context) error {
 	return config.DB.Error
 }
 
@@ -83,6 +83,14 @@ func GetLamaranStatusController(c echo.Context) error {
 	return config.DB.Error
 }
 
-func UploadLampiranController(c echo.Context) error {
+func PostLampiranController(c echo.Context) error {
+	return config.DB.Error
+}
+
+func GetLampiranListController(c echo.Context) error {
+	return config.DB.Error
+}
+
+func GetLampiranByIdController(c echo.Context) error {
 	return config.DB.Error
 }
