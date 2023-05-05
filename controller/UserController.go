@@ -50,3 +50,39 @@ func CreateUserController(c echo.Context) error {
 		"users":   users,
 	})
 }
+
+func UpdateUserController(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		echo.NewHTTPError(http.StatusBadRequest, "messages: invalid id parameter")
+	}
+
+	var users model.User
+
+	if err := config.DB.First(&users, id).Error; err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, err.Error())
+	}
+
+	c.Bind(&users)
+
+	if err := config.DB.Save(&users).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success update user by id",
+		"user":    users,
+	})
+}
+
+func ApplyJobsController(c echo.Context) error {
+	return config.DB.Error
+}
+
+func GetApplyJobsStatusController(c echo.Context) error {
+	return config.DB.Error
+}
+
+func UploadLampiranController(c echo.Context) error {
+	return config.DB.Error
+}
