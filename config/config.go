@@ -50,11 +50,12 @@ func InitDB() {
 	}
 }
 
+// Unused For Now
 func InitialMigration() {
 	DB.AutoMigrate(&model.User{})
 	DB.AutoMigrate(&model.Admin{})
 	DB.AutoMigrate(&model.Perusahaan{})
 	DB.AutoMigrate(&model.Jobs{})
 	DB.AutoMigrate(&model.Lamaran{})
-	// DB.AutoMigrate(&model.Lampiran{})
+	DB.AutoMigrate(&model.Lampiran{})
 }
