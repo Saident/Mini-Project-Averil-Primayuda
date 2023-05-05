@@ -37,3 +37,16 @@ func GetUserController(c echo.Context) error {
 		"users":   users,
 	})
 }
+
+func CreateUserController(c echo.Context) error {
+	users := model.User{}
+	c.Bind(&users)
+
+	if err := config.DB.Save(&users).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success create new users",
+		"users":   users,
+	})
+}
