@@ -56,5 +56,5 @@ func InitialMigration() {
 	DB.AutoMigrate(&model.Perusahaan{})
 	DB.AutoMigrate(&model.Jobs{})
 	DB.AutoMigrate(&model.Lamaran{})
-	DB.AutoMigrate(&model.Lampiran{})
+	// DB.AutoMigrate(&model.Lampiran{})
 }

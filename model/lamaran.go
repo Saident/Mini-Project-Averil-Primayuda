@@ -10,11 +10,11 @@ type Lamaran struct {
 	Lamaran_status string `json:"lamaran_status" form:"lamaran_status"`
 
 	User_ID int
-	User    User `gorm:"foreignKey:User_ID"`
+	User    User `gorm:"references:id"`
 
 	Job_ID int
-	Jobs   Jobs `gorm:"foreignKey:Perusahaan_ID"`
+	Jobs   Jobs `gorm:"references:id"`
 
 	Perusahaan_ID int
-	Perusahaan    Perusahaan `gorm:"foreignKey:Perusahaan_ID"`
+	Perusahaan    Perusahaan `gorm:"references:id"`
 }
