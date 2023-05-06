@@ -12,7 +12,11 @@ import (
 func New() *echo.Echo {
 	e := echo.New()
 	//Non-JWT Route
+
+	//Testing
 	e.GET("/users", controller.GetUsersController)
+	e.POST("/login", controller.LoginUser)
+	e.POST("/register", controller.CreateUserController)
 
 	eJwt := e.Group("")
 	eJwt.Use(mid.JWT([]byte(constants.SECRET_JWT)))
