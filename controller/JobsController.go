@@ -9,6 +9,7 @@ import (
 	"github.com/labstack/echo"
 )
 
+//TODO: add rules only for user and admin
 func GetJobsController(c echo.Context) error {
 	var jobs []model.Jobs
 
