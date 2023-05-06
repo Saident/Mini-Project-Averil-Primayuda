@@ -80,15 +80,26 @@ func UpdatePerusahaanController(c echo.Context) error {
 // TODO : add get data from JWT
 func PostJobsController(c echo.Context) error {
 	jobs := model.Jobs{}
-	c.Bind(&jobs)
 
-	if err := config.DB.Save(&jobs).Error; err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	claims, err := GetJwtClaims(c)
+	if !err {
+		return echo.NewHTTPError(http.StatusBadRequest)
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success create new jobs",
-		"jobs":    jobs,
-	})
+	role := claims["role"].(string)
+	perusahaanId := claims["id"].(float64)
+
+	if role == "perusahaan" {
+		jobs.PerusahaanID = int(perusahaanId)
+		c.Bind(&jobs)
+		if err := config.DB.Save(&jobs).Error; err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message": "success create new jobs",
+			"jobs":    jobs,
+		})
+	}
+	return echo.ErrForbidden
 }
 
 // TODO : add get data from JWT, remove perusahaan_id
