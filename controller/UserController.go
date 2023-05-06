@@ -21,6 +21,7 @@ func GetUsersController(c echo.Context) error {
 	})
 }
 
+//TODO : add get data from JWT, remove id
 func GetUserController(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
