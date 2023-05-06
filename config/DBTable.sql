@@ -1,5 +1,5 @@
 CREATE TABLE users (
-  id INT PRIMARY KEY,
+  id INT PRIMARY KEY AUTO_INCREMENT,
   nama VARCHAR(50) NOT NULL,
   tgl_lahir DATETIME NOT NULL,
   alamat VARCHAR(50) NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE perusahaans (
-  id INT PRIMARY KEY,
+  id INT PRIMARY KEY AUTO_INCREMENT,
   nama VARCHAR(50) NOT NULL,
   sektor VARCHAR(50) NOT NULL,
   alamat VARCHAR(50) NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE perusahaans (
 );
 
 CREATE TABLE jobs (
-  id INT PRIMARY KEY,
+  id INT PRIMARY KEY AUTO_INCREMENT,
   deskripsi VARCHAR(50) NOT NULL,
   alamat VARCHAR(50) NOT NULL,
   expire DATETIME NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE jobs (
 );
 
 CREATE TABLE lamarans (
-  id INT PRIMARY KEY,
+  id INT PRIMARY KEY AUTO_INCREMENT,
   lamaran_status VARCHAR(32) NOT NULL,
   user_id INT NOT NULL,
   job_id INT NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE lamarans (
 );
 
 CREATE TABLE lampirans (
-  id INT PRIMARY KEY,
+  id INT PRIMARY KEY AUTO_INCREMENT,
   lampiran_tipe INT NOT NULL,
   lampiran_content TEXT NOT NULL,
   user_id INT NOT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE lampirans (
 );
 
 CREATE TABLE admins (
-  id INT PRIMARY KEY,
+  id INT PRIMARY KEY AUTO_INCREMENT,
   email VARCHAR(50) UNIQUE NOT NULL,
   password VARCHAR(32) NOT NULL
 );
