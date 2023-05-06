@@ -6,7 +6,6 @@ import (
 
 type Perusahaan struct {
 	gorm.Model
-	ID       int    `gorm:"primaryKey"`
 	Nama     string `json:"nama" form:"nama"`
 	Sektor   string `json:"Sektor" form:"Sektor"`
 	Alamat   string `json:"alamat" form:"alamat"`
