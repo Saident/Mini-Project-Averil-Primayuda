@@ -6,7 +6,7 @@ import (
 
 type Jobs struct {
 	gorm.Model
-	ID        int    `gorm:"primaryKey"`
+	ID        int    `gorm:"primaryKey;autoIncrement"`
 	Deskripsi string `json:"deskripsi" form:"deskripsi"`
 	Alamat    string `json:"alamat" form:"alamat"`
 	Expire    string `json:"expire" form:"expire"`
@@ -14,5 +14,4 @@ type Jobs struct {
 	Gaji      string `json:"gaji" form:"gaji"`
 
 	PerusahaanID int
-	Perusahaan   Perusahaan `gorm:"references:id"`
 }
