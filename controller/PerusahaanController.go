@@ -21,6 +21,7 @@ func GetPerusahaansController(c echo.Context) error {
 	})
 }
 
+// TODO : add get data from JWT, remove id
 func GetPerusahaanController(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -51,6 +52,7 @@ func CreatePerusahaanController(c echo.Context) error {
 	})
 }
 
+// TODO : add get data from JWT, remove id
 func UpdatePerusahaanController(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -75,18 +77,7 @@ func UpdatePerusahaanController(c echo.Context) error {
 	})
 }
 
-func GetAllLamaranByPerusahaanController(c echo.Context) error {
-	return config.DB.Error
-}
-
-func GetLamaranByIdController(c echo.Context) error {
-	return config.DB.Error
-}
-
-func ValidateLamaranController(c echo.Context) error {
-	return config.DB.Error
-}
-
+// TODO : add get data from JWT
 func PostJobsController(c echo.Context) error {
 	jobs := model.Jobs{}
 	c.Bind(&jobs)
@@ -100,6 +91,7 @@ func PostJobsController(c echo.Context) error {
 	})
 }
 
+// TODO : add get data from JWT, remove perusahaan_id
 func GetJobByPerusahaanController(c echo.Context) error {
 	perusahaan_id, err := strconv.Atoi(c.Param("perusahaan_id"))
 	if err != nil {
@@ -117,20 +109,21 @@ func GetJobByPerusahaanController(c echo.Context) error {
 	})
 }
 
+// TODO : add get data from JWT
 func UpdateJobByIdController(c echo.Context) error {
-	job_Id, err := strconv.Atoi(c.Param("JobId"))
+	id, err := strconv.Atoi(c.Param("JobId"))
 	if err != nil {
 		echo.NewHTTPError(http.StatusBadRequest, "messages: invalid id parameter")
 	}
 
-	perusahaan_Id, err := strconv.Atoi(c.Param("PerusahaanId"))
+	perusahaan_id, err := strconv.Atoi(c.Param("PerusahaanId"))
 	if err != nil {
 		echo.NewHTTPError(http.StatusBadRequest, "messages: invalid id parameter")
 	}
 
 	var jobs model.Jobs
 
-	if err := config.DB.First(&jobs, job_Id, perusahaan_Id).Error; err != nil {
+	if err := config.DB.First(&jobs, id, perusahaan_id).Error; err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err.Error())
 	}
 
@@ -145,3 +138,17 @@ func UpdateJobByIdController(c echo.Context) error {
 		"job":     jobs,
 	})
 }
+
+func GetAllLamaranByPerusahaanController(c echo.Context) error {
+	return config.DB.Error
+}
+
+func GetLamaranByIdController(c echo.Context) error {
+	return config.DB.Error
+}
+
+func ValidateLamaranController(c echo.Context) error {
+	return config.DB.Error
+}
+
+// TODO : add get user lampiran
