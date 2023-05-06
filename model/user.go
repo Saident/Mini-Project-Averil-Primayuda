@@ -8,8 +8,7 @@ import (
 
 type User struct {
 	gorm.Model
-	ID          int       `gorm:"primaryKey"`
-	Nama        string    `json:"name" form:"name"`
+	Nama        string    `json:"nama" form:"nama"`
 	Tgl_lahir   time.Time `json:"tgl_lahir" form:"tgl_lahir"`
 	Alamat      string    `json:"alamat" form:"alamat"`
 	Disabilitas string    `json:"disabilitas" form:"disabilitas"`
