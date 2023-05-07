@@ -47,6 +47,7 @@ func New() *echo.Echo {
 	eJwt.POST("/perusahaan/lamaran/validate/:lamaran_id", controller.ValidateLamaranController)
 
 	//admins
+	eJwt.POST("/admin/jobs/validate/:job_id", controller.ValidateJobsController)
 
 	m.LogMiddleware(e)
 	return e
