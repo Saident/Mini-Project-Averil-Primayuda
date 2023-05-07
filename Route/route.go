@@ -21,19 +21,17 @@ func New() *echo.Echo {
 	e.POST("/register", controller.CreateUserController)
 	e.POST("/register/perusahaan", controller.CreatePerusahaanController)
 
-	//Testing
-	e.GET("/users", controller.GetUsersController)
-	e.GET("/perusahaan", controller.GetPerusahaansController)
-	e.POST("/uploadlampiran/:lampiran_tipe", controller.PostLampiranController)
-	e.GET("/getuserlampiran/:lamaran_id", controller.GetUserLampiranByPerusahaanController)
-
 	//JWT Route
 	eJwt := e.Group("")
 	eJwt.Use(mid.JWT([]byte(constants.SECRET_JWT)))
 
-	//TODO : add /update & /delete
-
 	//users
+	eJwt.PUT("/user/update", controller.UpdateUserController)
+	eJwt.DELETE("/user/delete", controller.DeleteUserController)
+
+	eJwt.POST("/user/lampiran/:lampiran_tipe", controller.PostLampiranController)
+	eJwt.GET("/user/lampiran", controller.GetLampiranListController)
+
 	eJwt.GET("/jobs", controller.GetJobsController)
 	eJwt.GET("/jobs/:job_id", controller.GetJobByIdController)
 
@@ -41,12 +39,18 @@ func New() *echo.Echo {
 	eJwt.GET("/lamaran/status", controller.GetLamaranStatusController)
 
 	//perusahaan
-	eJwt.POST("/perusahaan/jobs/post", controller.PostJobsController)
+	eJwt.PUT("/perusahaan/update", controller.UpdatePerusahaanController)
+	eJwt.DELETE("/perusahaan/delete", controller.DeletePerusahaanController)
+
 	eJwt.GET("/perusahaan/jobs", controller.GetJobByPerusahaanController)
+	eJwt.POST("/perusahaan/jobs/post", controller.PostJobsController)
+	eJwt.PUT("/perusahaan/jobs/update/:job_id", controller.UpdateJobByPerusahaanController)
 
 	eJwt.GET("/perusahaan/lamaran", controller.GetAllLamaranByPerusahaanController)
 	eJwt.GET("/perusahaan/lamaran/:lamaran_id", controller.GetLamaranByIdController)
 	eJwt.POST("/perusahaan/lamaran/validate/:lamaran_id", controller.ValidateLamaranController)
+
+	e.GET("/perusahaan/lamaran/lampiran/:lamaran_id", controller.GetUserLampiranByPerusahaanController)
 
 	//admins
 	eJwt.POST("/admin/jobs/validate/:job_id", controller.ValidateJobsController)
