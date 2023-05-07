@@ -43,7 +43,7 @@ CREATE TABLE lamarans (
 CREATE TABLE lampirans (
   id INT PRIMARY KEY AUTO_INCREMENT,
   lampiran_tipe INT NOT NULL,
-  lampiran_content TEXT NOT NULL,
+  lampiran_content MEDIUMTEXT NOT NULL,
   user_id INT NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(id)
 );
