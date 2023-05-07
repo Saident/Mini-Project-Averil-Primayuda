@@ -1,6 +1,5 @@
 package controller
 
-
 import (
 	"net/http"
 
@@ -9,15 +8,21 @@ import (
 	"github.com/labstack/echo"
 )
 
-//TODO: add rules only for user and admin
 func GetJobsController(c echo.Context) error {
 	var jobs []model.Jobs
-
-	if err := config.DB.Find(&jobs).Error; err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	claims, err := GetJwtClaims(c)
+	if !err {
+		return echo.NewHTTPError(http.StatusBadRequest)
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success get all jobs",
-		"jobs":  jobs,
-	})
+	role := claims["role"].(string)
+	if role == "user" || role == "admin" {
+		if err := config.DB.Find(&jobs).Error; err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message": "success get all jobs",
+			"jobs":    jobs,
+		})
+	}
+	return echo.ErrBadRequest
 }
