@@ -96,7 +96,9 @@ func PostJobsController(c echo.Context) error {
 
 	if role == "perusahaan" {
 		jobs.PerusahaanID = int(perusahaan_id)
+		jobs.Status = "Belum Divalidasi"
 		c.Bind(&jobs)
+
 		if err := config.DB.Save(&jobs).Error; err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}

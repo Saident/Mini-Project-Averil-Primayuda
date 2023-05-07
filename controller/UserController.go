@@ -109,6 +109,7 @@ func PostLamaranController(c echo.Context) error {
 
 		if err := config.DB.Where("user_id = ? AND job_id = ?", user_id, job_id).First(&lamarans).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
+				lamarans.Lamaran_status = "Belum Divalidasi"
 				lamarans.UserID = int(user_id)
 				lamarans.PerusahaanID = perusahaan_id
 				lamarans.JobID = job_id
