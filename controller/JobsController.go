@@ -43,7 +43,7 @@ func GetJobByIdController(c echo.Context) error {
 	}
 	role := claims["role"].(string)
 	if role == "user" || role == "admin" {
-		if err := config.DB.First(&jobs, job_id).Error; err != nil {
+		if err := config.DB.Where("status = ?", "Tervalidasi").First(&jobs, job_id).Error; err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}
 
