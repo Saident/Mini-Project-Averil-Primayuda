@@ -141,7 +141,7 @@ func GetLamaranStatusController(c echo.Context) error {
 	user_id := claims["id"].(float64)
 
 	if role == "user" {
-		var lamarans model.Lamaran
+		var lamarans []model.Lamaran
 		if err := config.DB.Where("user_id = ?", user_id).Find(&lamarans).Error; err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}
