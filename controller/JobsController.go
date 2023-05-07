@@ -16,9 +16,10 @@ func GetJobsController(c echo.Context) error {
 	}
 	role := claims["role"].(string)
 	if role == "user" || role == "admin" {
-		if err := config.DB.Find(&jobs).Error; err != nil {
+		if err := config.DB.Where("status = ?", "Tervalidasi").Find(&jobs).Error; err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}
+
 		return c.JSON(http.StatusOK, map[string]interface{}{
 			"message": "success get all jobs",
 			"jobs":    jobs,
