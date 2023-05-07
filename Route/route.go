@@ -24,6 +24,8 @@ func New() *echo.Echo {
 	//Testing
 	e.GET("/users", controller.GetUsersController)
 	e.GET("/perusahaan", controller.GetPerusahaansController)
+	e.POST("/uploadlampiran/:lampiran_tipe", controller.PostLampiranController)
+	e.GET("/getuserlampiran/:lamaran_id", controller.GetUserLampiranByPerusahaanController)
 
 	//JWT Route
 	eJwt := e.Group("")
