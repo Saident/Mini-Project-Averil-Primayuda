@@ -24,6 +24,8 @@ func New() *echo.Echo {
 	//Testing
 	e.GET("/users", controller.GetUsersController)
 	e.GET("/perusahaan", controller.GetPerusahaansController)
+	e.POST("/uploadlampiran/:lampiran_tipe", controller.PostLampiranController)
+	e.GET("/getuserlampiran/:lamaran_id", controller.GetUserLampiranByPerusahaanController)
 
 	//JWT Route
 	eJwt := e.Group("")
@@ -33,17 +35,21 @@ func New() *echo.Echo {
 
 	//users
 	eJwt.GET("/jobs", controller.GetJobsController)
+	eJwt.GET("/jobs/:job_id", controller.GetJobByIdController)
 
 	eJwt.POST("/lamaran/:perusahaan_id/:job_id", controller.PostLamaranController)
 	eJwt.GET("/lamaran/status", controller.GetLamaranStatusController)
 
 	//perusahaan
-	eJwt.POST("/jobs/post", controller.PostJobsController)
-	eJwt.GET("/jobs/perusahaan", controller.GetJobByPerusahaanController)
+	eJwt.POST("/perusahaan/jobs/post", controller.PostJobsController)
+	eJwt.GET("/perusahaan/jobs", controller.GetJobByPerusahaanController)
 
-	eJwt.GET("/lamaran/perusahaan", controller.GetAllLamaranByPerusahaanController)
-	eJwt.GET("/lamaran/perusahaan/:lamaran_id", controller.GetLamaranByIdController)
-	eJwt.POST("lamaran/perusahaan/validate/:lamaran_id", controller.ValidateLamaranController)
+	eJwt.GET("/perusahaan/lamaran", controller.GetAllLamaranByPerusahaanController)
+	eJwt.GET("/perusahaan/lamaran/:lamaran_id", controller.GetLamaranByIdController)
+	eJwt.POST("/perusahaan/lamaran/validate/:lamaran_id", controller.ValidateLamaranController)
+
+	//admins
+	eJwt.POST("/admin/jobs/validate/:job_id", controller.ValidateJobsController)
 
 	m.LogMiddleware(e)
 	return e
