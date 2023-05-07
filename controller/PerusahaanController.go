@@ -140,7 +140,7 @@ func UpdateJobByIdController(c echo.Context) error {
 	role := claims["role"].(string)
 	perusahaan_id := claims["id"].(float64)
 
-	job_id, err := strconv.Atoi(c.Param("JobId"))
+	job_id, err := strconv.Atoi(c.Param("job_id"))
 	if err != nil {
 		echo.NewHTTPError(http.StatusBadRequest, "messages: invalid id parameter")
 	}
