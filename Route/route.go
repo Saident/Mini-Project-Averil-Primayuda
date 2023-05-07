@@ -47,7 +47,7 @@ func New() *echo.Echo {
 	eJwt.PUT("/perusahaan/jobs/update/:job_id", controller.UpdateJobByPerusahaanController)
 
 	eJwt.GET("/perusahaan/lamaran", controller.GetAllLamaranByPerusahaanController)
-	eJwt.GET("/perusahaan/lamaran/:lamaran_id", controller.GetLamaranByIdController)
+	eJwt.GET("/perusahaan/lamaran/:lamaran_id", controller.GetLamaranByIdPerusahaanController)
 	eJwt.POST("/perusahaan/lamaran/validate/:lamaran_id", controller.ValidateLamaranController)
 
 	e.GET("/perusahaan/lamaran/lampiran/:lamaran_id", controller.GetUserLampiranByPerusahaanController)
