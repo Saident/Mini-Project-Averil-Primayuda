@@ -87,6 +87,31 @@ func UpdatePerusahaanController(c echo.Context) error {
 	return echo.ErrForbidden
 }
 
+func DeletePerusahaanController(c echo.Context) error {
+	claims, bool := GetJwtClaims(c)
+	if !bool {
+		return echo.NewHTTPError(http.StatusBadRequest, "messages: invalid JWT")
+	}
+	role := claims["role"].(string)
+	perusahaan_id := claims["id"].(float64)
+
+	if role == "perusahaan" {
+		var perusahaan model.Perusahaan
+		if err := config.DB.First(&perusahaan, perusahaan_id).Error; err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+
+		if err := config.DB.Delete(&perusahaan).Error; err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message": "success delete user by id",
+		})
+	}
+	return echo.ErrForbidden
+}
+
 func PostJobsController(c echo.Context) error {
 	jobs := model.Jobs{}
 
@@ -135,7 +160,7 @@ func GetJobByPerusahaanController(c echo.Context) error {
 	return echo.ErrForbidden
 }
 
-func UpdateJobByIdController(c echo.Context) error {
+func UpdateJobByPerusahaanController(c echo.Context) error {
 	claims, bool := GetJwtClaims(c)
 	if !bool {
 		return echo.NewHTTPError(http.StatusBadRequest, "messages: invalid JWT")

@@ -88,6 +88,31 @@ func UpdateUserController(c echo.Context) error {
 	return echo.ErrForbidden
 }
 
+func DeleteUserController(c echo.Context) error {
+	claims, bool := GetJwtClaims(c)
+	if !bool {
+		return echo.NewHTTPError(http.StatusBadRequest, "messages: invalid JWT")
+	}
+	role := claims["role"].(string)
+	user_id := claims["id"].(float64)
+
+	if role == "user" {
+		var user model.User
+		if err := config.DB.First(&user, user_id).Error; err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+
+		if err := config.DB.Delete(&user).Error; err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message": "success delete user by id",
+		})
+	}
+	return echo.ErrForbidden
+}
+
 func PostLamaranController(c echo.Context) error {
 	lamarans := model.Lamaran{}
 	perusahaan_id, err := strconv.Atoi(c.Param("perusahaan_id"))
