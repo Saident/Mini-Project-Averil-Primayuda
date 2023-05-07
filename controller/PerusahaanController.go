@@ -147,7 +147,7 @@ func UpdateJobByIdController(c echo.Context) error {
 
 	if role == "perusahaan" {
 		var jobs model.Jobs
-		if err := config.DB.Where("job_id = ? AND perusahaan_id", job_id, perusahaan_id).First(&jobs).Error; err != nil {
+		if err := config.DB.Where("job_id = ? AND perusahaan_id = ?", job_id, perusahaan_id).First(&jobs).Error; err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}
 
@@ -174,7 +174,7 @@ func GetAllLamaranByPerusahaanController(c echo.Context) error {
 	perusahaan_id := claims["id"].(float64)
 
 	if role == "perusahaan" {
-		var lamarans model.Lamaran
+		var lamarans []model.Lamaran
 		if err := config.DB.Where("perusahaan_id = ?", perusahaan_id).Find(&lamarans).Error; err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}
@@ -201,12 +201,16 @@ func GetLamaranByIdController(c echo.Context) error {
 
 	if role == "perusahaan" {
 		var lamarans model.Lamaran
+		var users model.User
 		if err := config.DB.Where("perusahaan_id = ? AND id = ?", perusahaan_id, lamaran_id).First(&lamarans).Error; err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}
+		if err := config.DB.First(&users, lamarans.UserID).Error; err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
 		return c.JSON(http.StatusOK, map[string]interface{}{
-			"message":  "success get lamarans",
-			"lamarans": lamarans,
+			"lamaran": lamarans,
+			"pelamar": users,
 		})
 	}
 	return echo.ErrForbidden
