@@ -77,5 +77,33 @@ func UpdateAdminController(c echo.Context) error {
 }
 
 func ValidateJobsController(c echo.Context) error {
-	return config.DB.Error
+	claims, bool := GetJwtClaims(c)
+	if !bool {
+		return echo.NewHTTPError(http.StatusBadRequest, "messages: invalid JWT")
+	}
+	role := claims["role"].(string)
+
+	job_id, err := strconv.Atoi(c.Param("job_id"))
+	if err != nil {
+		echo.NewHTTPError(http.StatusBadRequest, "messages: invalid id parameter")
+	}
+
+	if role == "admin" {
+		var jobs model.Jobs
+		if err := config.DB.Where("id = ?", job_id).First(&jobs).Error; err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+		jobs.Status = "Tervalidasi"
+		c.Bind(&jobs)
+
+		if err := config.DB.Save(&jobs).Error; err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message": "success validate job",
+			"job":     jobs,
+		})
+	}
+	return echo.ErrForbidden
 }
