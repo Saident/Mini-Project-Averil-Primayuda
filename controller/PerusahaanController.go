@@ -21,22 +21,26 @@ func GetPerusahaansController(c echo.Context) error {
 	})
 }
 
-// TODO : add get data from JWT, remove id
 func GetPerusahaanController(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		echo.NewHTTPError(http.StatusBadRequest, "messages: invalid id parameter")
+	claims, err := GetJwtClaims(c)
+	if !err {
+		return echo.NewHTTPError(http.StatusBadRequest)
 	}
+	role := claims["role"].(string)
+	perusahaan_id := claims["id"].(float64)
 
-	var perusahaans model.Perusahaan
-	if err := config.DB.First(&perusahaans, id).Error; err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	if role == "perusahaan" {
+		var perusahaans model.Perusahaan
+		if err := config.DB.First(&perusahaans, perusahaan_id).Error; err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message":     "success get perusahaans by id",
+			"perusahaans": perusahaans,
+		})
 	}
-
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message":     "success get perusahaans by id",
-		"perusahaans": perusahaans,
-	})
+	return echo.ErrForbidden
 }
 
 func CreatePerusahaanController(c echo.Context) error {
@@ -52,32 +56,34 @@ func CreatePerusahaanController(c echo.Context) error {
 	})
 }
 
-// TODO : add get data from JWT, remove id
 func UpdatePerusahaanController(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		echo.NewHTTPError(http.StatusBadRequest, "messages: invalid id parameter")
+	claims, err := GetJwtClaims(c)
+	if !err {
+		return echo.NewHTTPError(http.StatusBadRequest)
 	}
+	role := claims["role"].(string)
+	perusahaan_id := claims["id"].(float64)
 
-	var perusahaans model.Perusahaan
+	if role == "perusahaan" {
+		var perusahaans model.Perusahaan
+		if err := config.DB.First(&perusahaans, perusahaan_id).Error; err != nil {
+			return echo.NewHTTPError(http.StatusNotFound, err.Error())
+		}
 
-	if err := config.DB.First(&perusahaans, id).Error; err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err.Error())
+		c.Bind(&perusahaans)
+
+		if err := config.DB.Save(&perusahaans).Error; err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message":     "success update perusahaan by id",
+			"perusahaans": perusahaans,
+		})
 	}
-
-	c.Bind(&perusahaans)
-
-	if err := config.DB.Save(&perusahaans).Error; err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message":     "success update perusahaan by id",
-		"perusahaans": perusahaans,
-	})
+	return echo.ErrForbidden
 }
 
-// TODO : add get data from JWT
 func PostJobsController(c echo.Context) error {
 	jobs := model.Jobs{}
 
@@ -86,10 +92,10 @@ func PostJobsController(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
 	role := claims["role"].(string)
-	perusahaanId := claims["id"].(float64)
+	perusahaan_id := claims["id"].(float64)
 
 	if role == "perusahaan" {
-		jobs.PerusahaanID = int(perusahaanId)
+		jobs.PerusahaanID = int(perusahaan_id)
 		c.Bind(&jobs)
 		if err := config.DB.Save(&jobs).Error; err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -102,64 +108,141 @@ func PostJobsController(c echo.Context) error {
 	return echo.ErrForbidden
 }
 
-// TODO : add get data from JWT, remove perusahaan_id
 func GetJobByPerusahaanController(c echo.Context) error {
-	perusahaan_id, err := strconv.Atoi(c.Param("perusahaan_id"))
-	if err != nil {
-		echo.NewHTTPError(http.StatusBadRequest, "messages: invalid id parameter")
+	claims, err := GetJwtClaims(c)
+	if !err {
+		return echo.NewHTTPError(http.StatusBadRequest)
 	}
+	role := claims["role"].(string)
+	perusahaan_id := claims["id"].(float64)
 
 	var jobs []model.Jobs
-	if err := config.DB.Find(&jobs, perusahaan_id).Error; err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
+	if role == "perusahaan" {
+		if err := config.DB.Where("perusahaan_id = ?", perusahaan_id).Find(&jobs).Error; err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success get jobs by perusahaan id",
-		"jobs":    jobs,
-	})
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message": "success get jobs by perusahaan id",
+			"jobs":    jobs,
+		})
+	}
+	return echo.ErrForbidden
 }
 
-// TODO : add get data from JWT
 func UpdateJobByIdController(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("JobId"))
+	claims, bool := GetJwtClaims(c)
+	if !bool {
+		return echo.NewHTTPError(http.StatusBadRequest, "messages: invalid JWT")
+	}
+	role := claims["role"].(string)
+	perusahaan_id := claims["id"].(float64)
+
+	job_id, err := strconv.Atoi(c.Param("JobId"))
 	if err != nil {
 		echo.NewHTTPError(http.StatusBadRequest, "messages: invalid id parameter")
 	}
 
-	perusahaan_id, err := strconv.Atoi(c.Param("PerusahaanId"))
-	if err != nil {
-		echo.NewHTTPError(http.StatusBadRequest, "messages: invalid id parameter")
+	if role == "perusahaan" {
+		var jobs model.Jobs
+		if err := config.DB.Where("job_id = ? AND perusahaan_id", job_id, perusahaan_id).First(&jobs).Error; err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+
+		c.Bind(&jobs)
+
+		if err := config.DB.Save(&jobs).Error; err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message": "success update job by id",
+			"job":     jobs,
+		})
 	}
-
-	var jobs model.Jobs
-
-	if err := config.DB.First(&jobs, id, perusahaan_id).Error; err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err.Error())
-	}
-
-	c.Bind(&jobs)
-
-	if err := config.DB.Save(&jobs).Error; err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success update job by id",
-		"job":     jobs,
-	})
+	return echo.ErrForbidden
 }
 
 func GetAllLamaranByPerusahaanController(c echo.Context) error {
-	return config.DB.Error
+	claims, bool := GetJwtClaims(c)
+	if !bool {
+		return echo.NewHTTPError(http.StatusBadRequest, "messages: invalid JWT")
+	}
+	role := claims["role"].(string)
+	perusahaan_id := claims["id"].(float64)
+
+	if role == "perusahaan" {
+		var lamarans model.Lamaran
+		if err := config.DB.Where("perusahaan_id = ?", perusahaan_id).Find(&lamarans).Error; err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message":  "success get all lamarans",
+			"lamarans": lamarans,
+		})
+	}
+	return echo.ErrForbidden
 }
 
 func GetLamaranByIdController(c echo.Context) error {
-	return config.DB.Error
+	lamaran_id, err := strconv.Atoi(c.Param("lamaran_id"))
+	if err != nil {
+		echo.NewHTTPError(http.StatusBadRequest, "messages: invalid id parameter")
+	}
+
+	claims, bool := GetJwtClaims(c)
+	if !bool {
+		return echo.NewHTTPError(http.StatusBadRequest, "messages: invalid JWT")
+	}
+	role := claims["role"].(string)
+	perusahaan_id := claims["id"].(float64)
+
+	if role == "perusahaan" {
+		var lamarans model.Lamaran
+		if err := config.DB.Where("perusahaan_id = ? AND id = ?", perusahaan_id, lamaran_id).First(&lamarans).Error; err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message":  "success get lamarans",
+			"lamarans": lamarans,
+		})
+	}
+	return echo.ErrForbidden
 }
 
 func ValidateLamaranController(c echo.Context) error {
-	return config.DB.Error
+	lamaran_id, err := strconv.Atoi(c.Param("lamaran_id"))
+	if err != nil {
+		echo.NewHTTPError(http.StatusBadRequest, "messages: invalid id parameter")
+	}
+
+	claims, bool := GetJwtClaims(c)
+	if !bool {
+		return echo.NewHTTPError(http.StatusBadRequest, "messages: invalid JWT")
+	}
+	role := claims["role"].(string)
+	perusahaan_id := int(claims["id"].(float64))
+
+	if role == "perusahaan" {
+		var lamarans model.Lamaran
+		if err := config.DB.Where("perusahaan_id = ? AND id = ?", perusahaan_id, lamaran_id).First(&lamarans).Error; err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+
+		c.Bind(&lamarans)
+
+		if err := config.DB.Save(&lamarans).Error; err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message":  "success save lamarans",
+			"lamarans": lamarans,
+		})
+	}
+	return echo.ErrForbidden
 }
 
-// TODO : add get user lampiran
+func GetUserLampiran(c echo.Context) error {
+	return config.DB.Error
+}
