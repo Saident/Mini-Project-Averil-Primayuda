@@ -6,6 +6,8 @@ import (
 
 	"github.com/Saident/Mini-Project-Averil-Primayuda/config"
 	"github.com/Saident/Mini-Project-Averil-Primayuda/model"
+	"github.com/Saident/Mini-Project-Averil-Primayuda/utils"
+
 	"github.com/labstack/echo"
 )
 
@@ -77,7 +79,7 @@ func UpdateAdminController(c echo.Context) error {
 }
 
 func ValidateJobsController(c echo.Context) error {
-	claims, bool := GetJwtClaims(c)
+	claims, bool := utils.GetJwtClaims(c)
 	if !bool {
 		return echo.NewHTTPError(http.StatusBadRequest, "messages: invalid JWT")
 	}
