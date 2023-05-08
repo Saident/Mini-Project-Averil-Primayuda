@@ -23,7 +23,6 @@ func GetAdminsController(c echo.Context) error {
 	})
 }
 
-// TODO : add get data from JWT, remove id
 func GetAdminController(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
