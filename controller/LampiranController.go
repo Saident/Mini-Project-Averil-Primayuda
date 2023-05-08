@@ -89,6 +89,53 @@ func GetLampiranListController(c echo.Context) error {
 	return echo.ErrForbidden
 }
 
+func GetUserLampiranByUserController(c echo.Context) error {
+	lampiran_id, err := strconv.Atoi(c.Param("lampiran_id"))
+	if err != nil {
+		echo.NewHTTPError(http.StatusBadRequest, "messages: invalid id parameter")
+	}
+
+	claims, bool := utils.GetJwtClaims(c)
+	if !bool {
+		return echo.NewHTTPError(http.StatusBadRequest, "messages: invalid JWT")
+	}
+	role := claims["role"].(string)
+	user_id := claims["id"].(float64)
+
+	if role == "perusahaan" {
+		var lampirans model.Lampiran
+		if err := config.DB.Where("user_id = ?", user_id).First(&lampirans, lampiran_id).Error; err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+
+		decoded, err := base64.StdEncoding.DecodeString(lampirans.Lampiran_content)
+		if err != nil {
+			panic(err)
+		}
+
+		path := ("img/" + "users" + fmt.Sprintf("%f", user_id) + "lampiran" + fmt.Sprintf("%d", lampirans.ID) + ".jpg")
+
+		f, err := os.Create(path)
+		if err != nil {
+			panic(err)
+		}
+		defer f.Close()
+
+		if _, err := f.Write(decoded); err != nil {
+			panic(err)
+		}
+		if err := f.Sync(); err != nil {
+			panic(err)
+		}
+
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"lampirans": lampirans.Lampiran_tipe,
+			"content":   path,
+		})
+	}
+	return echo.ErrForbidden
+}
+
 func GetUserLampiranByPerusahaanController(c echo.Context) error {
 	lamaran_id, err := strconv.Atoi(c.Param("lamaran_id"))
 	if err != nil {
@@ -104,17 +151,17 @@ func GetUserLampiranByPerusahaanController(c echo.Context) error {
 
 	if role == "perusahaan" {
 		var lamarans model.Lamaran
-		if err := config.DB.Where("id = ? AND perusahaan_id = ?", lamaran_id, perusahaan_id).Find(&lamarans).Error; err != nil {
+		if err := config.DB.Where("id = ? AND perusahaan_id = ?", lamaran_id, perusahaan_id).First(&lamarans).Error; err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}
 
 		var users model.User
-		if err := config.DB.Where("id = ?", lamarans.UserID).Find(&users).Error; err != nil {
+		if err := config.DB.Where("id = ?", lamarans.UserID).First(&users).Error; err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}
 
 		var lampirans model.Lampiran
-		if err := config.DB.Where("user_id = ?", users.ID).Find(&lampirans).Error; err != nil {
+		if err := config.DB.Where("user_id = ?", users.ID).First(&lampirans).Error; err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}
 
@@ -139,7 +186,6 @@ func GetUserLampiranByPerusahaanController(c echo.Context) error {
 		}
 
 		return c.JSON(http.StatusOK, map[string]interface{}{
-			"message":   "success get all lamarans",
 			"lampirans": lampirans.Lampiran_tipe,
 			"content":   path,
 		})

@@ -29,7 +29,8 @@ func New() *echo.Echo {
 	eJwt.PUT("/user/update", controller.UpdateUserController)
 	eJwt.DELETE("/user/delete", controller.DeleteUserController)
 
-	eJwt.POST("/user/lampiran/:lampiran_tipe", controller.PostLampiranController)
+	eJwt.POST("/user/lampiran/post/:lampiran_tipe", controller.PostLampiranController)
+	eJwt.GET("/user/lampiran/:lampiran_id", controller.GetUserLampiranByUserController)
 	eJwt.GET("/user/lampiran", controller.GetLampiranListController)
 
 	eJwt.GET("/jobs", controller.GetJobsController)
