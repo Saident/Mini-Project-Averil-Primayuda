@@ -102,7 +102,7 @@ func GetUserLampiranByUserController(c echo.Context) error {
 	role := claims["role"].(string)
 	user_id := claims["id"].(float64)
 
-	if role == "perusahaan" {
+	if role == "user" {
 		var lampirans model.Lampiran
 		if err := config.DB.Where("user_id = ?", user_id).First(&lampirans, lampiran_id).Error; err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
