@@ -1,3 +1,3 @@
-## =========Coming Soon=========
+# Mini Project
 
 ## Mini Project Alterra Golang
